@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petualangan Matematika: Belajar Pecahan</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bungee+Tint&family=Press+Start+2P&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- Bumper -->
+    <div class="bumper-container">
+      <video width="100%" autoplay muted>
+        <source src="assets/bumper.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <!-- Game Container -->
+    <div id="game-container" class="">
+      <h1 class="bungee-tint-regular">
+        Petualangan Matematika: Belajar Pecahan
+      </h1>
+
+      <div id="game-sub-title" class="">
+        <h2>Sasaran: Siswa SD Kelas 4</h2>
+        <h3>
+          Tujuan Pembelajaran: Memahami konsep dasar pecahan dan operasinya.
+        </h3>
+      </div>
+
+      <div id="game-intro">
+        <p>
+          Selamat datang di Petualangan Matematika! Di sini kamu akan belajar
+          pecahan melalui petualangan yang seru. Selesaikan soal pecahan untuk
+          melewati level dan menyelesaikan permainan.
+        </p>
+        <button onclick="startGame()">Mulai Game</button>
+      </div>
+
+      <!-- Level 1 -->
+      <div id="level1" class="level hidden">
+        <h2>Level 1: Pecahan Dasar</h2>
+        <p>Pertanyaan: Berapakah 1/2 dari 4?</p>
+        <button onclick="checkAnswer(2)">2</button>
+        <button onclick="checkAnswer(3)">3</button>
+        <button onclick="checkAnswer(4)">4</button>
+      </div>
+
+      <!-- Level 2 -->
+      <div id="level2" class="level hidden">
+        <h2>Level 2: Pecahan Lanjutan</h2>
+        <p>Pertanyaan: Berapakah hasil dari 1/3 + 1/3?</p>
+        <button onclick="checkAnswer(2/3)">1/3</button>
+        <button onclick="checkAnswer(2)">2/3</button>
+        <button onclick="checkAnswer(1)">1</button>
+      </div>
+
+      <!-- Result -->
+      <div id="result" class="hidden">
+        <h2>Selamat!</h2>
+        <p>Kamu telah menyelesaikan permainan.</p>
+        <button onclick="restartGame()">Main Lagi</button>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

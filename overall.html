@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petualangan Alat Transportasi - Pembelajaran Interaktif</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap");
+
+      body,
+      html {
+        font-family: "Fredoka", sans-serif;
+        background-color: #e0f7fa;
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        padding: 20px;
+        box-sizing: border-box;
+        background-image: url("https://opengameart.org/sites/default/files/Cartoon_Clouds_0.png");
+        background-repeat: repeat-x;
+        background-position: bottom;
+        animation: moveClouds 60s linear infinite;
+      }
+      @keyframes moveClouds {
+        from {
+          background-position: 0 bottom;
+        }
+        to {
+          background-position: -1000px bottom;
+        }
+      }
+      header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #ff6f00;
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        animation: bounce 2s ease infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .nav-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .nav-button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .nav-button:hover {
+        background-color: #45a049;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+      }
+      .content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+      .section {
+        display: none;
+        animation: fadeIn 0.5s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .section.active {
+        display: block;
+      }
+      .instructions {
+        background-color: #fff9c4;
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border: 2px dashed #ffd54f;
+      }
+      .game-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+      }
+      .image-item,
+      .vehicle-item {
+        background-color: #ffffff;
+        border-radius: 15px;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: calc(33% - 20px);
+        max-width: 200px;
+        transition: all 0.3s ease;
+      }
+      .image-item:hover,
+      .vehicle-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+      .image-item img,
+      .vehicle-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+      .dropzone {
+        min-height: 40px;
+        border: 2px dashed #3f51b5;
+        border-radius: 10px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #e8eaf6;
+        transition: all 0.3s ease;
+      }
+      .dropzone:hover {
+        background-color: #c5cae9;
+      }
+      .draggable-item {
+        cursor: move;
+        font-size: 1rem;
+        background-color: #ff9800;
+        color: white;
+        border-radius: 25px;
+        padding: 10px 15px;
+        margin: 5px;
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+      .draggable-item:hover {
+        background-color: #f57c00;
+        transform: scale(1.05);
+      }
+      .listen-button {
+        background-color: #2196f3;
+        border: none;
+        color: white;
+        padding: 8px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.9rem;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+      }
+      .listen-button:hover {
+        background-color: #1976d2;
+        transform: scale(1.05);
+      }
+      .popup {
+        display: none;
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #4caf50;
+        color: white;
+        padding: 20px 40px;
+        border-radius: 25px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+      @keyframes popIn {
+        0% {
+          transform: translate(-50%, -50%) scale(0);
+        }
+        80% {
+          transform: translate(-50%, -50%) scale(1.1);
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+      footer {
+        text-align: center;
+        padding: 10px;
+        background-color: #03a9f4;
+        color: white;
+        border-radius: 0 0 20px 20px;
+      }
+      #quiz button {
+        background-color: #ff5722;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 1rem;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+      }
+      #quiz button:hover {
+        background-color: #e64a19;
+        transform: translateY(-3px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Petualangan Alat Transportasi</h1>
+        <p>Pembelajaran Interaktif untuk Siswa SD Kelas 3</p>
+      </header>
+      <nav class="nav-buttons">
+        <button class="nav-button" onclick="showSection('intro')">
+          Pendahuluan
+        </button>
+        <button class="nav-button" onclick="showSection('materi')">
+          Materi
+        </button>
+        <button class="nav-button" onclick="showSection('game1')">
+          Permainan 1
+        </button>
+        <button class="nav-button" onclick="showSection('game2')">
+          Permainan 2
+        </button>
+        <button class="nav-button" onclick="showSection('evaluasi')">
+          Evaluasi
+        </button>
+      </nav>
+      <div class="content-area">
+        <section id="intro" class="section active">
+          <h2>Selamat Datang di Petualangan Alat Transportasi!</h2>
+          <p>
+            Hai teman-teman! Ayo kita belajar tentang alat transportasi dengan
+            cara yang seru!
+          </p>
+          <p>Tujuan Pembelajaran:</p>
+          <ul>
+            <li>Mengenal berbagai jenis alat transportasi</li>
+            <li>Memahami fungsi dari alat transportasi</li>
+            <li>Mengelompokkan alat transportasi berdasarkan jenisnya</li>
+          </ul>
+          <div class="instructions">
+            <h3>Cara Bermain:</h3>
+            <ol>
+              <li>Klik tombol-tombol di atas untuk berpindah antar bagian</li>
+              <li>Baca materi dengan seksama</li>
+              <li>Mainkan permainan dengan menyeret dan melepas gambar</li>
+              <li>
+                Dengarkan suara kendaraan dengan menekan tombol "Dengarkan"
+              </li>
+              <li>Jawab pertanyaan di bagian evaluasi</li>
+            </ol>
+          </div>
+        </section>
+        <section id="materi" class="section">
+          <h2>Mengenal Alat Transportasi</h2>
+          <p>
+            Alat transportasi adalah kendaraan yang kita gunakan untuk berpindah
+            dari satu tempat ke tempat lain. Ada tiga jenis utama alat
+            transportasi:
+          </p>
+          <ol>
+            <li>
+              <h3>Transportasi Darat</h3>
+              <p>Contoh: Sepeda, Mobil, Bus, Kereta Api</p>
+              <img
+                src="/placeholder.svg?height=150&width=200"
+                alt="Transportasi Darat"
+                style="max-width: 100%; height: auto"
+              />
+            </li>
+            <li>
+              <h3>Transportasi Air</h3>
+              <p>Contoh: Perahu, Kapal Laut, Kapal Feri</p>
+              <img
+                src="/placeholder.svg?height=150&width=200"
+                alt="Transportasi Air"
+                style="max-width: 100%; height: auto"
+              />
+            </li>
+            <li>
+              <h3>Transportasi Udara</h3>
+              <p>Contoh: Pesawat Terbang, Helikopter</p>
+              <img
+                src="/placeholder.svg?height=150&width=200"
+                alt="Transportasi Udara"
+                style="max-width: 100%; height: auto"
+              />
+            </li>
+          </ol>
+          <p>
+            Setiap jenis alat transportasi memiliki kegunaan yang berbeda-beda.
+            Ada yang cepat, ada yang bisa mengangkut banyak orang, dan ada yang
+            bisa melintasi lautan!
+          </p>
+        </section>
+        <section id="game1" class="section">
+          <h2>Permainan 1: Mencocokkan Alat Transportasi</h2>
+          <div class="instructions">
+            <p>
+              Seret dan lepaskan nama alat transportasi ke gambar yang sesuai.
+              Ayo lihat seberapa banyak yang bisa kamu cocokkan!
+            </p>
+          </div>
+          <div class="game-area">
+            <!-- Game content will be dynamically added here -->
+          </div>
+        </section>
+        <section id="game2" class="section">
+          <h2>Permainan 2: Tebak Suara Kendaraan</h2>
+          <div class="instructions">
+            <p>
+              Dengarkan suara kendaraan dan cocokkan dengan namanya. Bisakah
+              kamu menebak semuanya?
+            </p>
+          </div>
+          <div class="game-area">
+            <!-- Game content will be dynamically added here -->
+          </div>
+        </section>
+        <section id="evaluasi" class="section">
+          <h2>Ayo Uji Pengetahuanmu!</h2>
+          <div id="quiz">
+            <!-- Quiz questions will be dynamically added here -->
+          </div>
+          <button onclick="checkAnswers()">Periksa Jawaban</button>
+        </section>
+      </div>
+      <footer>
+        <p>© 2024 Petualangan Alat Transportasi | Dibuat oleh [Nama Anda]</p>
+        <p>
+          Sumber: Buku Pelajaran IPS Kelas 3, Ensiklopedia Transportasi Anak,
+          Website Kementerian Perhubungan
+        </p>
+      </footer>
+    </div>
+    <div id="feedbackPopup" class="popup"></div>
+
+    <script>
+      const matchingItems = [
+        { image: "/placeholder.svg?height=150&width=200", name: "Sepeda" },
+        { image: "/placeholder.svg?height=150&width=200", name: "Mobil" },
+        { image: "/placeholder.svg?height=150&width=200", name: "Bus" },
+        { image: "/placeholder.svg?height=150&width=200", name: "Kereta Api" },
+        { image: "/placeholder.svg?height=150&width=200", name: "Kapal" },
+        { image: "/placeholder.svg?height=150&width=200", name: "Pesawat" },
+      ];
+
+      const soundItems = [
+        {
+          name: "Mobil",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "car.mp3",
+        },
+        {
+          name: "Bus",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "bus.mp3",
+        },
+        {
+          name: "Sepeda",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "bike.mp3",
+        },
+        {
+          name: "Pesawat",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "plane.mp3",
+        },
+        {
+          name: "Kapal",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "ship.mp3",
+        },
+        {
+          name: "Kereta Api",
+          image: "/placeholder.svg?height=80&width=80",
+          sound: "train.mp3",
+        },
+      ];
+
+      const quizQuestions = [
+        {
+          question: "Manakah yang bukan merupakan alat transportasi darat?",
+          options: ["Sepeda", "Mobil", "Kapal", "Bus"],
+          correctAnswer: "Kapal",
+        },
+        {
+          question:
+            "Alat transportasi apa yang biasanya digunakan untuk perjalanan antar benua?",
+          options: ["Mobil", "Kereta Api", "Kapal Laut", "Pesawat Terbang"],
+          correctAnswer: "Pesawat Terbang",
+        },
+        {
+          question: "Alat transportasi apa yang berjalan di atas rel?",
+          options: ["Bus", "Truk", "Kereta Api", "Sepeda Motor"],
+          correctAnswer: "Kereta Api",
+        },
+      ];
+
+      function showSection(sectionId) {
+        document.querySelectorAll(".section").forEach((section) => {
+          section.classList.remove("active");
+        });
+        document.getElementById(sectionId).classList.add("active");
+
+        if (sectionId === "game1") {
+          initializeMatchingGame();
+        } else if (sectionId === "game2") {
+          initializeSoundGame();
+        } else if (sectionId === "evaluasi") {
+          initializeQuiz();
+        }
+      }
+
+      function initializeMatchingGame() {
+        const gameArea = document.querySelector("#game1 .game-area");
+        gameArea.innerHTML = "";
+
+        const shuffledItems = [...matchingItems].sort(
+          () => Math.random() - 0.5
+        );
+
+        shuffledItems.forEach((item, index) => {
+          const imageItem = document.createElement("div");
+          imageItem.className = "image-item";
+          imageItem.innerHTML = `
+                    <img src="${item.image}" alt="Alat Transportasi ${
+            index + 1
+          }">
+                    <div class="dropzone" data-name="${item.name}"></div>
+                `;
+          gameArea.appendChild(imageItem);
+        });
+
+        const nameContainer = document.createElement("div");
+        nameContainer.style.marginTop = "20px";
+        shuffledItems.forEach((item) => {
+          const nameItem = document.createElement("div");
+          nameItem.className = "draggable-item";
+          nameItem.draggable = true;
+          nameItem.textContent = item.name;
+          nameItem.addEventListener("dragstart", drag);
+          nameContainer.appendChild(nameItem);
+        });
+        gameArea.appendChild(nameContainer);
+
+        document.querySelectorAll(".dropzone").forEach((dropzone) => {
+          dropzone.addEventListener("dragover", allowDrop);
+          dropzone.addEventListener("drop", drop);
+        });
+      }
+
+      function initializeSoundGame() {
+        const gameArea = document.querySelector("#game2 .game-area");
+        gameArea.innerHTML = "";
+
+        const shuffledItems = [...soundItems].sort(() => Math.random() - 0.5);
+
+        shuffledItems.forEach((item, index) => {
+          const vehicleItem = document.createElement("div");
+          vehicleItem.className = "vehicle-item";
+          vehicleItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="vehicle-image">
+                    <button class="listen-button" data-sound="${item.sound}">Dengarkan</button>
+                    <div class="dropzone" data-name="${item.name}"></div>
+                `;
+          gameArea.appendChild(vehicleItem);
+        });
+
+        const nameContainer = document.createElement("div");
+        nameContainer.style.marginTop = "20px";
+        shuffledItems.forEach((item) => {
+          const nameItem = document.createElement("div");
+          nameItem.className = "draggable-item";
+          nameItem.draggable = true;
+          nameItem.textContent = item.name;
+          nameItem.addEventListener("dragstart", drag);
+          nameContainer.appendChild(nameItem);
+        });
+        gameArea.appendChild(nameContainer);
+
+        document.querySelectorAll(".dropzone").forEach((dropzone) => {
+          dropzone.addEventListener("dragover", allowDrop);
+          dropzone.addEventListener("drop", drop);
+        });
+
+        document.querySelectorAll(".listen-button").forEach((button) => {
+          button.addEventListener("click", playSound);
+        });
+      }
+
+      function initializeQuiz() {
+        const quizContainer = document.getElementById("quiz");
+        quizContainer.innerHTML = "";
+
+        quizQuestions.forEach((q, index) => {
+          const questionDiv = document.createElement("div");
+          questionDiv.innerHTML = `
+                    <p><strong>Pertanyaan ${index + 1}:</strong> ${
+            q.question
+          }</p>
+                    ${q.options
+                      .map(
+                        (option) => `
+                        <label>
+                            <input type="radio" name="q${index}" value="${option}">
+                            ${option}
+                        </label><br>
+                    `
+                      )
+                      .join("")}
+                `;
+          quizContainer.appendChild(questionDiv);
+        });
+      }
+
+      function drag(event) {
+        event.dataTransfer.setData("text", event.target.textContent);
+        event.target.style.opacity = "0.5";
+      }
+
+      function allowDrop(event) {
+        event.preventDefault();
+      }
+
+      function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text");
+        const dropzone = event.target.closest(".dropzone");
+
+        if (dropzone.dataset.name === data) {
+          dropzone.textContent = data;
+          dropzone.style.backgroundColor = "#4caf50";
+          dropzone.style.color = "white";
+          dropzone.style.border = "none";
+          event.target.closest(".draggable-item")?.remove();
+          showFeedback("Hebat! Kamu benar!");
+        } else {
+          showFeedback("Ups, coba lagi ya!");
+        }
+        document
+          .querySelectorAll(".draggable-item")
+          .forEach((item) => (item.style.opacity = "1"));
+      }
+
+      function playSound(event) {
+        const soundFile = event.target.dataset.sound;
+        const audio = new Audio(soundFile);
+        audio.play();
+      }
+
+      function showFeedback(message) {
+        const popup = document.getElementById("feedbackPopup");
+        popup.textContent = message;
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+
+      function checkAnswers() {
+        let score = 0;
+        quizQuestions.forEach((q, index) => {
+          const selectedAnswer = document.querySelector(
+            `input[name="q${index}"]:checked`
+          );
+          if (selectedAnswer && selectedAnswer.value === q.correctAnswer) {
+            score++;
+          }
+        });
+        showFeedback(
+          `Wah, hebat! Kamu benar ${score} dari ${quizQuestions.length} pertanyaan!`
+        );
+      }
+
+      // Initialize the intro section by default
+      showSection("intro");
+    </script>
+  </body>
+</html>

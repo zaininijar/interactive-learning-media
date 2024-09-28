@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fun Transportation Matching Game</title>
+    <link rel="stylesheet" href="assets/css/game-2.css" />
+  </head>
+  <body>
+    <nav class="nav-buttons">
+      <button class="nav-button" onclick="showSection('intro')">
+        Pendahuluan
+      </button>
+      <button class="nav-button" onclick="showSection('materi')">Materi</button>
+      <button class="nav-button" onclick="showSection('game-1')">
+        Permainan 1
+      </button>
+      <button class="nav-button active" onclick="showSection('game-2')">
+        Permainan 2
+      </button>
+      <button class="nav-button" onclick="showSection('evaluation')">
+        Evaluasi
+      </button>
+    </nav>
+    <div class="container">
+      <h1>Fun Transportation Matching Game</h1>
+      <p class="instructions">
+        Drag and drop the correct sentence to match each picture!
+      </p>
+      <div class="game-area">
+        <div class="image-container"></div>
+        <div class="sentence-container"></div>
+      </div>
+    </div>
+    <div id="successPopup" class="popup">Great job! That's correct!</div>
+    <div id="errorPopup" class="popup">Oops! Try again!</div>
+
+    <script>
+      const items = [
+        {
+          image: "assets/game2/images/a.png",
+          sentence: "A. Mother goes to the market on foot.",
+        },
+        {
+          image: "assets/game2/images/b.png",
+          sentence: "B. Made rides a bike around the Townsquare.",
+        },
+        {
+          image: "assets/game2/images/c.png",
+          sentence: "C. Mr. Udin goes to work by motorcycle.",
+        },
+        {
+          image: "assets/game2/images/d.png",
+          sentence: "D. Mrs. Maria goes to the Supermarket by car.",
+        },
+        {
+          image: "assets/game2/images/e.png",
+          sentence: "E. Mr. Surya goes to Jakarta by plane.",
+        },
+        {
+          image: "assets/game2/images/f.png",
+          sentence: "F. Aisyah goes to school by pedicab.",
+        },
+      ];
+
+      const imageContainer = document.querySelector(".image-container");
+      const sentenceContainer = document.querySelector(".sentence-container");
+      const successPopup = document.getElementById("successPopup");
+      const errorPopup = document.getElementById("errorPopup");
+
+      const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+
+      shuffledItems.forEach((item, index) => {
+        const imageItem = document.createElement("div");
+        imageItem.className = "image-item";
+        imageItem.innerHTML = `
+                <img src="${item.image}" alt="Transportation Scene ${
+          index + 1
+        }">
+                <div class="dropzone" data-index="${index}"></div>
+            `;
+        imageContainer.appendChild(imageItem);
+      });
+
+      shuffledItems.forEach((item, index) => {
+        const sentenceItem = document.createElement("div");
+        sentenceItem.className = "sentence-item";
+        sentenceItem.style.order = Math.floor(Math.random() * 100) + 1;
+        sentenceItem.draggable = true;
+        sentenceItem.textContent = item.sentence;
+        sentenceItem.dataset.index = index;
+        sentenceItem.addEventListener("dragstart", drag);
+        sentenceContainer.appendChild(sentenceItem);
+      });
+
+      function drag(event) {
+        event.dataTransfer.setData("text", event.target.dataset.index);
+      }
+
+      document.querySelectorAll(".dropzone").forEach((dropzone) => {
+        dropzone.addEventListener("dragover", allowDrop);
+        dropzone.addEventListener("drop", drop);
+      });
+
+      function allowDrop(event) {
+        event.preventDefault();
+      }
+
+      function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text");
+        const dropzone = event.target.closest(".dropzone");
+
+        if (dropzone.dataset.index === data) {
+          const sentenceItem = document.querySelector(
+            `.sentence-item[data-index="${data}"]`
+          );
+          dropzone.appendChild(sentenceItem);
+          sentenceItem.draggable = false;
+          sentenceItem.style.cursor = "default";
+          showSuccessPopup();
+        } else {
+          showErrorPopup();
+        }
+      }
+
+      function showSuccessPopup() {
+        showPopup(successPopup);
+      }
+
+      function showErrorPopup() {
+        showPopup(errorPopup);
+      }
+
+      function showPopup(popup) {
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+
+      function showSection(sectionId) {
+        window.location.href = sectionId + ".html";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fun Transportation Game</title>
+    <link rel="stylesheet" href="assets/css/game-1.css" />
+  </head>
+  <body>
+    <nav class="nav-buttons">
+      <button class="nav-button" onclick="showSection('intro')">
+        Pendahuluan
+      </button>
+      <button class="nav-button" onclick="showSection('materi')">Materi</button>
+      <button class="nav-button active" onclick="showSection('game-1')">
+        Permainan 1
+      </button>
+      <button class="nav-button" onclick="showSection('game-2')">
+        Permainan 2
+      </button>
+      <button class="nav-button" onclick="showSection('evaluation')">
+        Evaluasi
+      </button>
+    </nav>
+    <div class="container">
+      <h1>Fun Transportation Game</h1>
+      <p class="instructions">
+        Listen to the sound, then drag and drop the correct name!
+      </p>
+      <div class="game-area">
+        <div class="vehicle-list"></div>
+        <div class="name-list"></div>
+      </div>
+    </div>
+    <div id="errorPopup" class="popup">Oops! Try again!</div>
+
+    <script>
+      const vehicles = [
+        {
+          name: "Motorbike",
+          image: "assets/game1/images/Motorbike icon.png",
+          sound: "assets/game1/audios/motorbike.mp3",
+        },
+        {
+          name: "Bicycle",
+          image: "assets/game1/images/Bicycle icon.png",
+          sound: "assets/game1/audios/bicycle.mp3",
+        },
+        {
+          name: "Car",
+          image: "assets/game1/images/Car icon.png",
+          sound: "assets/game1/audios/car.mp3",
+        },
+        {
+          name: "Ship",
+          image: "assets/game1/images/Ship icon.png",
+          sound: "assets/game1/audios/ship.mp3",
+        },
+        {
+          name: "Truck",
+          image: "assets/game1/images/Truck icon.png",
+          sound: "assets/game1/audios/truck.mp3",
+        },
+        {
+          name: "Van",
+          image: "assets/game1/images/Van icon.png",
+          sound: "assets/game1/audios/van.mp3",
+        },
+        {
+          name: "Plane",
+          image: "assets/game1/images/Plane icon.png",
+          sound: "assets/game1/audios/plane.mp3",
+        },
+        {
+          name: "Ambulance",
+          image: "assets/game1/images/Ambulance icon.png",
+          sound: "assets/game1/audios/ambulance.mp3",
+        },
+        {
+          name: "Helicopter",
+          image: "assets/game1/images/Helicopter icon.png",
+          sound: "assets/game1/audios/helicopter.mp3",
+        },
+        {
+          name: "Bus",
+          image: "assets/game1/images/Bus icon.png",
+          sound: "assets/game1/audios/bus.mp3",
+        },
+        {
+          name: "Train",
+          image: "assets/game1/images/Train icon.png",
+          sound: "assets/game1/audios/train.mp3",
+        },
+        {
+          name: "Taxi",
+          image: "assets/game1/images/Taxi icon.png",
+          sound: "assets/game1/audios/taxi.mp3",
+        },
+      ];
+
+      const vehicleList = document.querySelector(".vehicle-list");
+      const nameList = document.querySelector(".name-list");
+      const errorPopup = document.getElementById("errorPopup");
+
+      const shuffledVehicles = [...vehicles].sort(() => Math.random() - 0.5);
+
+      shuffledVehicles.forEach((vehicle) => {
+        const vehicleItem = document.createElement("div");
+        vehicleItem.className = "vehicle-item";
+        vehicleItem.innerHTML = `
+                <img src="${vehicle.image}" alt="${vehicle.name}" class="vehicle-image">
+                <audio id="${vehicle.name}" src="${vehicle.sound}"></audio>
+                <button class="listen-button" data-sound="${vehicle.name}" data-is-playing="false">Listen</button>
+                <div class="dropzone" data-vehicle="${vehicle.name}"></div>
+            `;
+        vehicleList.appendChild(vehicleItem);
+      });
+
+      shuffledVehicles.forEach((vehicle) => {
+        const nameItem = document.createElement("div");
+        nameItem.className = "name-item";
+        nameItem.style.order = Math.floor(Math.random() * 100) + 1;
+        nameItem.draggable = true;
+        nameItem.textContent = vehicle.name;
+        nameItem.addEventListener("dragstart", drag);
+        nameList.appendChild(nameItem);
+      });
+
+      function drag(event) {
+        event.dataTransfer.setData("text", event.target.textContent);
+      }
+
+      document.querySelectorAll(".dropzone").forEach((dropzone) => {
+        dropzone.addEventListener("dragover", allowDrop);
+        dropzone.addEventListener("drop", drop);
+      });
+
+      function allowDrop(event) {
+        event.preventDefault();
+      }
+
+      function drop(event) {
+        event.preventDefault();
+        const data = event.dataTransfer.getData("text");
+        const dropzone = event.target.closest(".dropzone");
+
+        if (dropzone.dataset.vehicle === data) {
+          dropzone.textContent = data;
+          dropzone.style.border = "none";
+          dropzone.style.backgroundColor = "#06d6a0";
+          dropzone.style.color = "white";
+          document.querySelector(`.name-item:contains('${data}')`).remove();
+        } else {
+          showErrorPopup();
+        }
+      }
+
+      function showErrorPopup() {
+        errorPopup.style.display = "block";
+        setTimeout(() => {
+          errorPopup.style.display = "none";
+        }, 2000);
+      }
+
+      document.querySelectorAll(".listen-button").forEach((button) => {
+        button.addEventListener("click", playSound);
+      });
+
+      function playSound(event) {
+        const button = event.target;
+        const soundFile = document.getElementById(button.dataset.sound);
+        const isPlaying = button.dataset.isPlaying === "true";
+
+        if (!isPlaying) {
+          soundFile.play();
+          button.dataset.isPlaying = "true";
+          button.textContent = "Stop";
+        } else {
+          soundFile.pause();
+          soundFile.currentTime = 0;
+          button.dataset.isPlaying = "false";
+          button.textContent = "Listen";
+        }
+      }
+
+      HTMLElement.prototype.querySelector = function (selector) {
+        return Array.from(this.querySelectorAll(selector)).find(
+          (el) => el.textContent.trim() === selector.slice(1, -1)
+        );
+      };
+
+      function showSection(sectionId) {
+        window.location.href = sectionId + ".html";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petualangan Alat Transportasi - Pembelajaran Interaktif</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <link href="https://vjs.zencdn.net/8.0.4/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.0.4/video.min.js"></script>
+    <style>
+      .video-js {
+        object-fit: cover;
+        width: 100%;
+        height: calc(100% - 75px);
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .section {
+        position: relative;
+        height: calc(100% - 10px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Petualangan Alat Transportasi</h1>
+        <p>Pembelajaran Interaktif untuk Siswa SD Kelas 3</p>
+      </header>
+      <nav class="nav-buttons">
+        <button class="nav-button" onclick="showSection('intro')">
+          Pendahuluan
+        </button>
+        <button class="nav-button active" onclick="showSection('materi')">
+          Materi
+        </button>
+        <button class="nav-button" onclick="showSection('game-1')">
+          Permainan 1
+        </button>
+        <button class="nav-button" onclick="showSection('game-2')">
+          Permainan 2
+        </button>
+        <button class="nav-button" onclick="showSection('evaluation')">
+          Evaluasi
+        </button>
+      </nav>
+      <div class="content-area">
+        <section id="materi" class="section active">
+          <h2>Mengenal Alat Transportasi</h2>
+          <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            data-setup="{}"
+          >
+            <source src="assets/materi.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </section>
+      </div>
+      <footer>
+        <p>© 2024 Petualangan Alat Transportasi | Dibuat oleh [Nama Anda]</p>
+        <p>
+          Sumber: Buku Pelajaran IPS Kelas 3, Ensiklopedia Transportasi Anak,
+          Website Kementerian Perhubungan
+        </p>
+      </footer>
+    </div>
+    <div id="feedbackPopup" class="popup"></div>
+
+    <script>
+      function showSection(sectionId) {
+        window.location.href = sectionId + ".html";
+      }
+      var player = videojs("my-video");
+    </script>
+  </body>
+</html>

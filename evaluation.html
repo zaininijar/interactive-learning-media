@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Petualangan Alat Transportasi - Pembelajaran Interaktif</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Petualangan Alat Transportasi</h1>
+        <p>Pembelajaran Interaktif untuk Siswa SD Kelas 3</p>
+      </header>
+      <nav class="nav-buttons">
+        <button class="nav-button" onclick="showSection('intro')">
+          Pendahuluan
+        </button>
+        <button class="nav-button" onclick="showSection('materi')">
+          Materi
+        </button>
+        <button class="nav-button" onclick="showSection('game-1')">
+          Permainan 1
+        </button>
+        <button class="nav-button" onclick="showSection('game-2')">
+          Permainan 2
+        </button>
+        <button class="nav-button active" onclick="showSection('evaluation')">
+          Evaluasi
+        </button>
+      </nav>
+      <div class="content-area">
+        <section id="evaluasi" class="section active">
+          <h2>Ayo Uji Pengetahuanmu!</h2>
+          <div id="quiz"></div>
+          <button
+            class="nav-button"
+            style="margin-top: 20px; border-radius: 8px !important"
+            onclick="checkAnswers()"
+          >
+            Periksa Jawaban
+          </button>
+        </section>
+      </div>
+      <footer>
+        <p>© 2024 Petualangan Alat Transportasi | Dibuat oleh [Nama Anda]</p>
+        <p>
+          Sumber: Buku Pelajaran IPS Kelas 3, Ensiklopedia Transportasi Anak,
+          Website Kementerian Perhubungan
+        </p>
+      </footer>
+    </div>
+
+    <div id="feedbackPopup" class="popup"></div>
+
+    <script>
+      function showSection(sectionId) {
+        window.location.href = sectionId + ".html";
+      }
+
+      const quizQuestions = [
+        {
+          question: "Manakah yang bukan merupakan alat transportasi darat?",
+          options: ["Sepeda", "Mobil", "Kapal", "Bus"],
+          correctAnswer: "Kapal",
+        },
+        {
+          question:
+            "Alat transportasi apa yang biasanya digunakan untuk perjalanan antar benua?",
+          options: ["Mobil", "Kereta Api", "Kapal Laut", "Pesawat Terbang"],
+          correctAnswer: "Pesawat Terbang",
+        },
+        {
+          question: "Alat transportasi apa yang berjalan di atas rel?",
+          options: ["Bus", "Truk", "Kereta Api", "Sepeda Motor"],
+          correctAnswer: "Kereta Api",
+        },
+      ];
+
+      function initializeQuiz() {
+        const quizContainer = document.getElementById("quiz");
+        quizContainer.innerHTML = "";
+
+        quizQuestions.forEach((q, index) => {
+          const questionDiv = document.createElement("div");
+          questionDiv.innerHTML = `
+                    <p><strong>Pertanyaan ${index + 1}:</strong> ${
+            q.question
+          }</p>
+                    ${q.options
+                      .map(
+                        (option) => `
+                        <label>
+                            <input type="radio" name="q${index}" value="${option}">
+                            ${option}
+                        </label><br>
+                    `
+                      )
+                      .join("")}
+                `;
+          quizContainer.appendChild(questionDiv);
+        });
+      }
+
+      function showFeedback(message) {
+        const popup = document.getElementById("feedbackPopup");
+        popup.textContent = message;
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 2000);
+      }
+
+      function checkAnswers() {
+        let score = 0;
+        quizQuestions.forEach((q, index) => {
+          const selectedAnswer = document.querySelector(
+            `input[name="q${index}"]:checked`
+          );
+          if (selectedAnswer && selectedAnswer.value === q.correctAnswer) {
+            score++;
+          }
+        });
+        showFeedback(
+          `Wah, hebat! Kamu benar ${score} dari ${quizQuestions.length} pertanyaan!`
+        );
+      }
+
+      initializeQuiz();
+    </script>
+  </body>
+</html>
